@@ -11,7 +11,7 @@ const corsOptions = {
   origin: "*",
 };
 
-app.use(cors(corsOptions));
+app.use(cors());
 
 app.use(express.json());
 app.use(helmet());
