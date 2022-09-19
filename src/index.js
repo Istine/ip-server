@@ -22,6 +22,10 @@ app.listen(PORT, () => {
 
 app.use("/api/v1", ip);
 
+app.get("/", (req, res) => {
+  return res.status(200).json({ message: "works!" });
+});
+
 app.use((req, res, next) => {
   next(new Error("no route found!"));
 });
