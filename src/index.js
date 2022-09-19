@@ -16,9 +16,11 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(helmet());
 
-app.listen(PORT, () => {
-  console.log(`server runining of http://localhost:${PORT}`);
-});
+app
+  .listen(PORT, () => {
+    console.log(`server runining of http://localhost:${PORT}`);
+  })
+  .setTimeout(10000);
 
 app.use("/api/v1", ip);
 
