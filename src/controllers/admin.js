@@ -13,8 +13,7 @@ module.exports = {
     try {
       const { email, password } = req.body;
       const user = await User.findOne({ email });
-      if (!user)
-        return responseWithCode(res, `user with ${email} does not exist!`, 404);
+      if (!user) return responseWithCode(res, `user does not exist!`, 404);
       const isMatch = await comparePasswords(password, user.password);
       if (!isMatch) {
         responseWithCode(res, `incorrect email or password combination`, 401);
