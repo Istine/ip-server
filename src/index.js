@@ -12,7 +12,11 @@ const PORT = process.env.NODE_ENV === "production" ? process.env.PORT : 3000;
 
 const corsOptions = {
   credentials: true,
-  origin: ["http://localhost:5173", "https://ipland-server.herokuapp.com/"],
+  origin: [
+    "http://localhost:5173",
+    "https://ipland-server.herokuapp.com/",
+    "https://ipland-app.herokuapp.com/",
+  ],
 };
 
 const sess = {
