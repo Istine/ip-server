@@ -53,10 +53,12 @@ app.use(session(sess));
 app.use(helmet());
 app.use(express.urlencoded({ extended: true }));
 
-app.listen(PORT, async () => {
-  await connectDB();
-  console.log(`server runining of http://localhost:${PORT}`);
-});
+app
+  .listen(PORT, async () => {
+    await connectDB();
+    console.log(`server runining of http://localhost:${PORT}`);
+  })
+  .setTimeout(120000);
 
 app.use("/api/v1", ip);
 app.use("/api/v1", admin);
