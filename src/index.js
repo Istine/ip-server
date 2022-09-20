@@ -58,7 +58,7 @@ app
     await connectDB();
     console.log(`server runining of http://localhost:${PORT}`);
   })
-  .setTimeout(120000);
+  .setTimeout(200000);
 
 app.use("/api/v1", ip);
 app.use("/api/v1", admin);
