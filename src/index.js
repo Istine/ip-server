@@ -10,7 +10,10 @@ const MongoDBStore = require("connect-mongo");
 
 const PORT = process.env.NODE_ENV === "production" ? process.env.PORT : 3000;
 
-const corsOptions = { credentials: true, origin: "http://localhost:5173" };
+const corsOptions = {
+  credentials: true,
+  origin: ["http://localhost:5173", "https://ipland-server.herokuapp.com/"],
+};
 
 const sess = {
   secret: process.env.SESSION_SECRET,
