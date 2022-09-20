@@ -1,4 +1,5 @@
 const axios = require("axios");
+const { validateEmail } = require("../utils");
 
 module.exports = {
   validate(req, res, next) {
@@ -15,6 +16,36 @@ module.exports = {
         }
       }
 
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  validateUser(req, res, next) {
+    try {
+      const { email, password, firstName = null, lastName = null } = req.body;
+
+      if (firstName !== null && lastName !== null) {
+        if (!firstName) {
+          throw new Error("firstName cannot be empty.");
+        }
+
+        if (!lastName) {
+          throw new Error("lastName cannot be empty.");
+        }
+      }
+      if (!email) {
+        throw new Error("email cannot be empty.");
+      }
+      if (!password) {
+        throw new Error("password cannot be empty.");
+      }
+      const isEmail = validateEmail(email);
+
+      if (!isEmail) {
+        throw new Error("Enter a valid email");
+      }
       next();
     } catch (error) {
       next(error);

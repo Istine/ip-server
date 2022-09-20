@@ -1,3 +1,5 @@
+const bcrpypt = require("bcrypt");
+
 const flattenObj = (obj = {}) => {
   const keys = Object.keys(obj);
   let flat = {};
@@ -20,4 +22,32 @@ const flattenObj = (obj = {}) => {
 
   return flat;
 };
-module.exports = { flattenObj };
+
+const validateEmail = function (email) {
+  const re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  return re.test(email);
+};
+
+function hashPassword(password = "") {
+  return bcrpypt.hashSync(password, 10);
+}
+
+async function comparePasswords(plainTextPassword, hashedPassword) {
+  const match = await bcrpypt.compare(plainTextPassword, hashedPassword);
+  if (match) {
+    return match;
+  }
+  return null;
+}
+
+const responseWithCode = (res, message, code, data = null) => {
+  return res.status(code).json({ message, ...(data && { data }) });
+};
+
+module.exports = {
+  flattenObj,
+  validateEmail,
+  hashPassword,
+  comparePasswords,
+  responseWithCode,
+};

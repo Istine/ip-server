@@ -3,26 +3,60 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const helmet = require("helmet");
-const { ip } = require("./routes");
+const { ip, admin } = require("./routes");
+const { connectDB } = require("./db");
+const session = require("express-session");
+const MongoDBStore = require("connect-mongo");
 
 const PORT = process.env.NODE_ENV === "production" ? process.env.PORT : 3000;
 
-const corsOptions = {
-  origin: "*",
+const corsOptions = { credentials: true, origin: "http://localhost:5173" };
+
+const sess = {
+  secret: process.env.SESSION_SECRET,
+  name: "sessionId",
+  cookie: {
+    maxAge: 24 * 60 * 60 * 1000,
+    httpOnly: true,
+    secure: true,
+  },
+  store: MongoDBStore.create({
+    mongoUrl: process.env.MONGO_URI,
+    ttl: 14 * 24 * 60 * 60, // = 14 days. Default
+    autoRemove: "native", // Default
+  }),
+  resave: true,
+  saveUninitialized: false,
 };
 
-app.use(cors(corsOptions));
+if (app.get("env") === "production") {
+  app.set("trust proxy", 1); // trust first proxy
+  sess.cookie.secure = true; // serve secure cookies
+}
+
+process.on("unhandledRejection", (reason, handler) => {
+  console.log("reason: ", reason);
+});
+
+process.on("uncaughtException", (error, origin) => {
+  console.log(error);
+});
 
 app.use(express.json());
-app.use(helmet());
+app.use(cors(corsOptions));
 
-app
-  .listen(PORT, () => {
-    console.log(`server runining of http://localhost:${PORT}`);
-  })
-  .setTimeout(10000);
+app.use(session(sess));
+
+app.use(helmet());
+app.use(express.urlencoded({ extended: true }));
+
+app.listen(PORT, async () => {
+  await connectDB();
+  console.log(`server runining of http://localhost:${PORT}`);
+});
 
 app.use("/api/v1", ip);
+app.use("/api/v1", admin);
 
 app.get("/", (req, res) => {
   return res.status(200).json({ message: "works!" });
